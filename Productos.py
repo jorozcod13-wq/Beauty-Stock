@@ -49,9 +49,21 @@ def eliminar ():
             print("No se encontro algún producto con ese código")
 
 
+#Buscar Producto 
+def buscar ():
+    buscar_codigo=input("Ingresa el código del producto que deseas buscar: ")
+    for producto in productos:
+        if producto["codigo"] == buscar_codigo:
+            print("Nombre:", producto["nombre"])
 
+            break
+    else:
+        print("No se encontró el producto.")
+    
 
 agregar()
 mostrar()
+agregar()
 eliminar()
 mostrar()
+buscar()

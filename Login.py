@@ -1,3 +1,5 @@
+from getpass import getpass
+
 usuario = "admin"
 contra = "gestor123"
 
@@ -5,11 +7,11 @@ print("bienvenido")
 
 while True:
     user=input("Ingrese su usuario: ")
-    pwd=input("ingrese la contraseña: ")
+    pwd=getpass("ingrese la contraseña: ")
 
-    if user == usuario and pwd== contra:
-        print("Datos Válidos")
-        print("Bienvenido Beauty Stock")
+    if user == usuario and pwd == contra:
+        print("Datos válidos")
+        print("Bienvenido a Beauty Stock")
 
         break
 

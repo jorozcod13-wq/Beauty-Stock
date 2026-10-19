@@ -173,6 +173,55 @@ class Menuprincipal:
         self.logout_btn = tk.Button(root, text="cerrar sesión", command=self.on_logout_btn, bg="#785964", font=("Helvetica", 15))
         self.logout_btn.place(x=760, y=810, width=140, height=60)
 
+    
+def abrir_ventana(self, atributo, clase_ventana):
+    # Comprobar si esa ventana ya existe
+    ventana = getattr(self, atributo, None)
+
+    if ventana is not None and ventana.root.winfo_exists():
+        ventana.root.lift()
+        return
+
+    # Si hay otra ventana secundaria abierta, traerla al frente
+    if (self.ventana_activa is not None
+            and self.ventana_activa.winfo_exists()):
+        self.ventana_activa.lift()
+        return
+
+    # Crear la ventana secundaria
+    nueva_ventana = clase_ventana(self.root)
+
+    setattr(self, atributo, nueva_ventana)
+    self.ventana_activa = nueva_ventana.root
+
+    # Hacerla modal para bloquear el menú mientras esté abierta
+    nueva_ventana.root.transient(self.root)
+    nueva_ventana.root.grab_set()
+
+    # Limpiar las referencias cuando se cierre
+    def cerrar_ventana():
+        nueva_ventana.root.destroy()
+        setattr(self, atributo, None)
+        self.ventana_activa = None
+
+    nueva_ventana.root.protocol(
+        "WM_DELETE_WINDOW",
+        cerrar_ventana
+    )
+
+
+def cerrar_sesion_ventanas(self):
+    if (self.ventana_activa is not None
+            and self.ventana_activa.winfo_exists()):
+        self.ventana_activa.grab_release()
+        self.ventana_activa.destroy()
+
+    self.ventana_activa = None
+    self.ventana_agregar = None
+    self.ventana_buscar = None
+    self.ventana_eliminar = None
+
+
     def on_buscar_btn(self):
         pass
 
@@ -387,18 +436,3 @@ if __name__ == "__main__":
     root.mainloop()
 
 
-
-    #def on_button1(self):
-        #usuario = self.entry1.get()
-        #contraseña = self.entry2.get()
-
-        #if usuario == "admin" and contraseña == "gestor123":
-           # messagebox.showinfo(
-            #"Beauty Stock",
-            #"¡Inicio de sesión correcto!"
-           # )
-        #else:
-         #   messagebox.showerror(
-         #       "Error",
-          #      "Usuario o contraseña incorrectos."
-          #  )

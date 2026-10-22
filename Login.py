@@ -19,3 +19,5 @@ while True:
         print("Datos Inválidos")
 
 print("Entrando al sistema de inventario...")
+
+#Nota:Solo es la logica, falta implementar los * cuando se escriba la contraseña

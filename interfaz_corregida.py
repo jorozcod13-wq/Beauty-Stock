@@ -139,7 +139,7 @@ class Main:
 
         # Imagen del login
         self.image1_image = ImageTk.PhotoImage(
-            Image.open("img/2.png").resize((240, 650))
+            Image.open("img/login2.jpg").resize((240, 650))
         )
 
         self.image1 = tk.Label(
@@ -268,7 +268,7 @@ class Menuprincipal:
         self.encabezado.place(x=0, y=0, width=950, height=170)
 
         self.logo_image = ImageTk.PhotoImage(
-            Image.open("img/logo.webp").resize((110, 80))
+            Image.open("img/logotipo.png").resize((110, 80))
         )
 
         self.logo = tk.Label(
@@ -703,3 +703,6 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = Main(root)
     root.mainloop()
+
+
+#Interfaz mejorada pero tampoco sirve hay cosas que mejorar y hay que verificar ciertos problemas

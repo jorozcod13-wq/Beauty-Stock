@@ -436,3 +436,4 @@ if __name__ == "__main__":
     root.mainloop()
 
 
+#Esta interfaz ya no sirve (Es una base para mejorar)

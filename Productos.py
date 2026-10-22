@@ -67,3 +67,6 @@ agregar()
 eliminar()
 mostrar()
 buscar()
+
+#Nota: Logica para implementar a la interfaz (falta mejorar)
+

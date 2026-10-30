@@ -166,40 +166,51 @@ class Menuprincipal:
 
         self.encabezado = tk.Frame(root, bg=THEME_ACCENT, bd=0)
         self.encabezado.place(x=0, y=0, width=950, height=170)
+
         try:
             self.logo_image = ImageTk.PhotoImage(
-                Image.open("img/logotipo.png").resize((110, 80)))
-            tk.Label(self.encabezado, image=self.logo_image,
-                     bg=THEME_ACCENT, bd=0).place(
-                         x=35, y=35, width=110, height=80)
+                Image.open("img/logotipo.png").resize((125, 100))
+            )
+            tk.Label(
+                self.encabezado,
+                image=self.logo_image,
+                bg=THEME_ACCENT,
+                bd=0
+            ).place(x=45, y=40, width=125, height=100)
+
         except (FileNotFoundError, OSError):
-            tk.Label(self.encabezado, text="♡", font=("Helvetica", 52, "bold"),
-                     bg=THEME_ACCENT, fg=THEME_BG).place(
-                         x=45, y=30, width=90, height=90)
-        tk.Label(self.encabezado, text="Beauty Stock", fg=THEME_BG,
-                 bg=THEME_ACCENT, font=("Helvetica", 36, "bold")).place(
-                     x=190, y=30, width=440, height=80)
-        tk.Label(self.encabezado, text="Diana Barrios", fg=THEME_BG,
-                 bg=THEME_ACCENT, font=("Helvetica", 12)).place(
-                     x=755, y=25, width=170, height=30)
-        tk.Label(self.encabezado, text="0903-26-", fg=THEME_FG,
-                 bg=THEME_ACCENT, font=("Helvetica", 11)).place(
-                     x=755, y=50, width=170, height=25)
-        tk.Label(self.encabezado, text="Janeth Orozco", fg=THEME_BG,
-                 bg=THEME_ACCENT, font=("Helvetica", 12)).place(
-                     x=755, y=85, width=170, height=30)
-        tk.Label(self.encabezado, text="0903-26-5297", fg=THEME_FG,
-                 bg=THEME_ACCENT, font=("Helvetica", 11)).place(
-                     x=755, y=110, width=170, height=25)
+            tk.Label(
+                self.encabezado,
+                text="♡",
+                font=("Helvetica", 65, "bold"),
+                bg=THEME_ACCENT,
+                fg=THEME_BG
+            ).place(x=55, y=35, width=100, height=110)
+
+
+        tk.Label(
+            self.encabezado,
+            text="BEAUTY JyD STOCK",
+            fg=THEME_BG,
+            bg=THEME_ACCENT,
+            font=("Helvetica", 43, "bold")
+        ).place(x=205, y=35, width=680, height=70)
+
+        tk.Label(
+                self.encabezado,
+                text="Gestión de inventario",
+                fg=THEME_BG,
+                bg=THEME_ACCENT,
+                font=("Helvetica", 18, "italic")
+            ).place(x=210, y=105, width=400, height=35)
 
         crear_boton(root, "Buscar", self.on_buscar_btn, THEME_MAUVE,
-                    "#FFFFFF").place(x=50, y=190, width=140, height=60)
+                    "#FFFFFF").place(x=90, y=190, width=200, height=60)
         crear_boton(root, "Agregar", self.on_agregar_btn, THEME_FIELD_BG,
-                    THEME_MAUVE).place(x=290, y=190, width=140, height=60)
+                    THEME_MAUVE).place(x=375, y=190, width=200, height=60)
         crear_boton(root, "Eliminar", self.on_eliminar_btn, THEME_MAUVE,
-                    "#FFFFFF").place(x=530, y=190, width=140, height=60)
-        crear_boton(root, "Mostrar", self.on_mostrar_btn, THEME_FIELD_BG,
-                    THEME_MAUVE).place(x=760, y=190, width=140, height=60)
+                    "#FFFFFF").place(x=660, y=190, width=200, height=60)
+
 
         self.tabla_product = ttk.Treeview(
             root, columns=("col1", "col2", "col3", "col4", "col5"),
@@ -277,13 +288,105 @@ class Menuprincipal:
     def on_eliminar_btn(self):
         self.abrir_ventana("ventana_eliminar", Eliminar)
 
-    def on_mostrar_btn(self):
-        self.actualizar_tabla()
-        if not self.productos:
-            messagebox.showinfo("Inventario", "Todavía no hay productos registrados.",
-                                parent=self.root)
-
 #Seccion de Diana
+
+    # ESTADISTICAS DEL INVENTARIO
+
+    def on_calculo_btn(self):
+        productos = self.productos
+
+        if len(productos) == 0:
+            messagebox.showinfo(
+                "Estadísticas",
+                "Todavía no hay productos registrados.",
+                parent=self.root
+            )
+            return
+
+        total_productos = len(productos)
+        total_unidades = 0
+        valor_inventario = 0
+        suma_precios = 0
+
+        mas_caro = productos[0]
+        mas_barato = productos[0]
+
+        for producto in productos:
+            total_unidades += producto["cantidad"]
+
+            valor_inventario += (
+                producto["precio"] * producto["cantidad"]
+            )
+
+            suma_precios += producto["precio"]
+
+            if producto["precio"] > mas_caro["precio"]:
+                mas_caro = producto
+
+            if producto["precio"] < mas_barato["precio"]:
+                mas_barato = producto
+
+        promedio = suma_precios / total_productos
+
+        mensaje = (
+            f"Productos diferentes: {total_productos}\n"
+            f"Unidades disponibles: {total_unidades}\n"
+            f"Valor del inventario: Q{valor_inventario:.2f}\n"
+            f"Precio promedio: Q{promedio:.2f}\n"
+            f"Más caro: {mas_caro['nombre']} "
+            f"(Q{mas_caro['precio']:.2f})\n"
+            f"Más barato: {mas_barato['nombre']} "
+            f"(Q{mas_barato['precio']:.2f})"
+        )
+
+        messagebox.showinfo(
+            "Estadísticas de Beauty Stock",
+            mensaje,
+            parent=self.root
+        )
+        
+
+    # ORDENAMIENTO BURBUJA
+
+    def on_ordenar_btn(self):
+        productos = self.productos
+        n = len(productos)
+
+        if n == 0:
+            messagebox.showinfo(
+                "Ordenamiento",
+                "No hay productos para ordenar.",
+                parent=self.root
+            )
+            return
+
+        # Ordenar de mayor a menor precio
+        for i in range(n - 1):
+            for j in range(n - 1 - i):
+
+                if productos[j]["precio"] < productos[j + 1]["precio"]:
+                    temporal = productos[j]
+
+                    productos[j] = productos[j + 1]
+
+                    productos[j + 1] = temporal
+
+        # Actualizar la tabla del inventario
+        self.actualizar_tabla()
+
+        texto = "Productos ordenados del más caro al más barato:\n\n"
+
+        for producto in productos:
+            texto += (
+                f"{producto['nombre']}: "
+                f"Q{producto['precio']:.2f}\n"
+            )
+
+        messagebox.showinfo(
+            "Ordenamiento burbuja",
+            texto,
+            parent=self.root
+        )
 
 
 
@@ -546,3 +649,4 @@ if __name__ == "__main__":
 #Mejoras en las funciones; agregar: ya valida los campos, evita que hayan codigos duplicados (P001 no puede existir dos veces); Buscar: cuando se agrega un codigo YA MUESTRA los datos de ese producto; Eliminar: solicita confirmar; Mostrar: actualiza los datos pero es algo inservible (puede que no se quede para la version final)
 #Al cerrar sesion en el menú, devuelve al login
 #Faltan Mejoras e incorporar las funciones de Diana fecha 22/10/2026
+#Se incorporo el trabajo de Diana 30/10/2026 se hicieron los ultimos cambios 
